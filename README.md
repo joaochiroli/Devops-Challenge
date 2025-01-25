@@ -34,14 +34,19 @@ Please provide some pull requests to show pass or fail status in the CI pipeline
 
 ## SRE Challenge: Part 2
 Continuous Deployment and Load Testing 
+
 Deploy the provided application to your chosen cloud provider using any service that runs the application as a Docker container. Then, create a test plan for the application's home page and generate a testing report using JMeter.
+
 The application needs to:
 Available for anyone with Internet access only during the challenge recording
 
 ## SRE Challenge: Part 3
 Monitoring system  
+
 Deploy a Prometheus monitoring system on an Ubuntu cloud instance. The system should be secured and accessible through a reverse proxy, with proper authentication in place, and connected to an external Node Exporter. You can follow these steps: 
+
 Access the Server: Access your cloud instance via SSH using either the provided server password or an SSH key (if configured).
+
 Install Prometheus and Node Exporter:
 Update your package list and install Prometheus with the following commands:
 sudo apt update sudo apt install prometheus
