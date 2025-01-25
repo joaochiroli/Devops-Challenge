@@ -2,22 +2,6 @@
 
 SRE Kubernetes Coding Challenge
 
-FSL Version: V1.0.0
-Introduction
-Welcome to our coding challenge! This challenge has been designed to test your coding skills and problem-solving abilities. This challenge is a great way to push yourself and learn new things. The challenge will test your technology stack skills and your ability to solve problems. Good luck, and have fun!
-Guidelines
-You will create a screen recording video of yourself completing the challenge, then send us a link to the file via Google Drive. A few things to consider:
-The recording must capture the entire coding challenge and should not exceed 60 minutes. While there is some flexibility to go beyond this limit, any additional time over 60 minutes will result in penalties and may affect your application.
-You can use screen recording software like Loom, QuickTime, or something similar, to create the video.
-As you complete the challenge, please explain what you are doing. Walk us through your thinking, explain your decisions, etc.
-You cannot use tools such as Copilot, Tabnine, Captain Stack, GPT-Code-Clippy, chatGPT, or similar to simplify or generate code to support the challenge. Doing this will be grounds for automatic disqualification.
-You cannot search for information from websites like Stackoverflow, blogs, forums, or similar; however, you can use the official documentation website of the technology.
-You MUST NOT edit your video, stop it and continue later, copy contents from hidden screens, or do anything that could be considered cheating.
-The recording must be done in one take without pauses or editing. You MUST NOT stop or interrupt the recording at any point; if you do, you will be disqualified.
-You should start the recording after completing the project's environment setup.
-You should record your entire screen so we can validate your implementation correctly. Also, your computer clock should be visible in the entire video.
-Here is a short clip from a recent coding challenge as an example of what your recording should look like Example video. It is from a React challenge, but it is the same for any challenge.
-Please upload the video file to Google Drive and share an open link with us (we support .mp4, files smaller/with less than 4 GB).
 Technologies 
 Kubernetes
 DigitalOcean/AWS/GCP/Azure
