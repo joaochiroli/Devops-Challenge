@@ -19,13 +19,15 @@ git clone https://{GITHUB-TOKEN}@github.com/fullstacklabs/assessment-cc-sre-kube
 ​
 ## SRE Challenge: Part 1
 Continuous integration
+
 Set up a new repository and CI pipeline using any code version provider
 The CI steps should be created and triggered for any pull request. The pipeline should run the following steps:
-Install dependencies npm install
-Linter (ESLint) npm run lint
-Formatter (Prettier) npm run prettier
-Test (Jest) CI=true npm run test
-Build npm run build
+- Install dependencies npm install
+- Linter (ESLint) npm run lint
+- Formatter (Prettier) npm run prettier
+- Test (Jest) CI=true npm run test
+- Build npm run build
+
 The pipeline should be successful. 
 Please provide some pull requests to show pass or fail status in the CI pipeline.
 
