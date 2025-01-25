@@ -3,14 +3,15 @@
 SRE Kubernetes Coding Challenge
 
 Technologies 
-Kubernetes
-DigitalOcean/AWS/GCP/Azure
-Gitlab/Github/CircleCI/CodeCommit 
-JMeter
-Docker
-Prometheus
-Linux
-NGINX
+- Kubernetes
+- DigitalOcean/AWS/GCP/Azure
+- Gitlab/Github/CircleCI/CodeCommit 
+- JMeter
+- Docker
+- Prometheus
+- Linux
+- NGINX
+
 Setup
 You can clone the challenge repository to your local machine with the following command:
 {GITHUB-TOKEN}: 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 
