@@ -38,6 +38,7 @@ Continuous Deployment and Load Testing
 Deploy the provided application to your chosen cloud provider using any service that runs the application as a Docker container. Then, create a test plan for the application's home page and generate a testing report using JMeter.
 
 The application needs to:
+
 Available for anyone with Internet access only during the challenge recording
 
 ## SRE Challenge: Part 3
