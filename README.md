@@ -1,4 +1,4 @@
-# Full-Stack-Challenge
+# Challenge
 
 SRE Kubernetes Coding Challenge
 
