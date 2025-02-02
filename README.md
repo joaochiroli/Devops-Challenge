@@ -12,10 +12,6 @@ Technologies
 - Linux
 - NGINX
 
-Setup
-You can clone the challenge repository to your local machine with the following command:
-{GITHUB-TOKEN}: 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 
-git clone https://{GITHUB-TOKEN}@github.com/fullstacklabs/assessment-cc-sre-kubernetes-sr-01 --branch v1.0.0
 ​
 ## SRE Challenge: Part 1
 Continuous integration
