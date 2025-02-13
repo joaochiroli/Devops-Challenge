@@ -44,11 +44,14 @@ Deploy a Prometheus monitoring system on an Ubuntu cloud instance. The system sh
 - Access the Server: Access your cloud instance via SSH using either the provided server password or an SSH key (if configured).
 - Install Prometheus and Node Exporter:
 Update your package list and install Prometheus with the following commands:
-`sudo apt update sudo apt install prometheus
-​
+```
+sudo apt update sudo apt install prometheus
+​```
 Verify the installation by checking the status of Prometheus services:
-sudo service prometheus status sudo service prometheus-node-exporter status
-​
+```
+sudo service prometheus status
+sudo service prometheus-node-exporter status
+​```
 Completion Criteria
 
 - Use NGINX as a reverse proxy to forward requests from your server's IP address to Prometheus' default ports as follows: 
