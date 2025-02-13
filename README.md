@@ -48,12 +48,12 @@ Update your package list and install Prometheus with the following commands:
 ```
 sudo apt update
 sudo apt install prometheus
-
+```
 Verify the installation by checking the status of Prometheus services:
 ```
 sudo service prometheus status
 sudo service prometheus-node-exporter status
-
+```
 Completion Criteria
 
 - Use NGINX as a reverse proxy to forward requests from your server's IP address to Prometheus' default ports as follows: 
