@@ -43,9 +43,11 @@ Monitoring system
 Deploy a Prometheus monitoring system on an Ubuntu cloud instance. The system should be secured and accessible through a reverse proxy, with proper authentication in place, and connected to an external Node Exporter. You can follow these steps: 
 - Access the Server: Access your cloud instance via SSH using either the provided server password or an SSH key (if configured).
 - Install Prometheus and Node Exporter:
+
 Update your package list and install Prometheus with the following commands:
 ```
-sudo apt update sudo apt install prometheus
+sudo apt update
+sudo apt install prometheus
 ​```
 Verify the installation by checking the status of Prometheus services:
 ```
