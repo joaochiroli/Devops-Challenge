@@ -56,9 +56,11 @@ sudo service prometheus-node-exporter status
 ```
 Completion Criteria
 
-- Use NGINX as a reverse proxy to forward requests from your server's IP address to Prometheus' default ports as follows: 
-http://{YOUR-SERVER-IP}/ to Prometheus (<http://localhost:9090/>) http://{YOUR-SERVER-IP}/metrics/ to the Node Exporter (<http://localhost:9100/>)
-​
+- Use NGINX as a reverse proxy to forward requests from your server's IP address to Prometheus' default ports as follows:
+```
+http://{YOUR-SERVER-IP}/ to Prometheus (<http://localhost:9090/>)
+http://{YOUR-SERVER-IP}/metrics/ to the Node Exporter (<http://localhost:9100/>)
+​```
 - Basic authentication is set up, requiring credentials to access both endpoints.
 - Direct access to ports 9090 (Prometheus) and 9100 (Node Exporter) is blocked, and access is only allowed via NGINX.
 - Prometheus is scraping metrics from an external Node Exporter running on a second server.
