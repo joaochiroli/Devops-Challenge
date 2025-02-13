@@ -48,7 +48,7 @@ Update your package list and install Prometheus with the following commands:
 ```
 sudo apt update
 sudo apt install prometheus
-​```
+
 Verify the installation by checking the status of Prometheus services:
 ```
 sudo service prometheus status
