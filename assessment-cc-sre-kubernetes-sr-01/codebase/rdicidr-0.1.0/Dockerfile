@@ -1,21 +1,35 @@
-FROM node:15 as builder
+# Etapa de build
+FROM node:15 AS builder
 
-WORKDIR
+# Define o diretório de trabalho
+WORKDIR /app
 
-COPY
+# Copia os arquivos necessários
+COPY package.json package-lock.json ./
 
-RUN 
+# Instala dependências
+RUN npm install
 
-COPY
+# Copia o restante dos arquivos da aplicação
+COPY . .
 
-RUN 
+# Faz o build da aplicação (se necessário)
+RUN npm run build
 
-FROM
+# Etapa de produção
+FROM node:15
 
-WORKDIR
+# Define o diretório de trabalho
+WORKDIR /app
 
-COPY
+# Copia arquivos do estágio anterior
+COPY --from=builder /app /app
 
-RUN 
+# Instala as dependências de produção
+RUN npm install --only=production
 
-ENTRYPOINT 
+# Define o comando para iniciar a aplicação
+CMD ["npm", "start"]
+
+# Exposição de porta (opcional)
+EXPOSE 3000
