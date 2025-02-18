@@ -2,13 +2,14 @@
 
 Technologies 
 - Kubernetes
-- DigitalOcean/AWS/GCP/Azure
-- Gitlab/Github/CircleCI/CodeCommit 
+- Azure
+- Github
 - JMeter
 - Docker
 - Prometheus
 - Linux
 - NGINX
+- Azure Devops
 
 ​
 ## Challenge: Part 1
