@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs
+  template: 
+    metadata:
+      name: nodejs
+      labels:
+        app: nodejs  
+    spec:
+      containers:
+        - name: nodejsapp
+          image: mdcrepositorychiroli.azurecr.io/node.js:latest
+          ports:
+            - containerPort: 3000
+      imagePullSecrets:
+        - name: acr-secret    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-service
+  labels: 
+    app: nodejs
+spec:
+  type: LoadBalancer 
+  selector:
+    app: nodejs
+  ports: 
+    - port: 3000
+      targetPort: 3000
