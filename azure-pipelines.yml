@@ -1,0 +1,199 @@
+trigger:
+- main
+
+pr:
+  branches:
+    include:
+    -  main
+
+stages:
+  - stage: BuildAndTest
+    displayName: Build and Test Job
+    pool:
+      vmImage: 'ubuntu-latest'
+    jobs:
+    - job: Build
+      displayName: 'Build and Test Job'
+      steps:
+      - checkout: self
+        path: 'src'
+        displayName: 'Checkout code'
+
+      - task: UseNode@1
+        inputs:
+          version: '15.x'
+        displayName: 'Install Node.js'
+
+      - script: npm install
+        workingDirectory: $(Build.SourcesDirectory)/assessment-cc-sre-kubernetes-sr-01/codebase/rdicidr-0.1.0
+        displayName: 'Install dependencies'
+
+      - script: npm run lint
+        workingDirectory: $(Build.SourcesDirectory)/assessment-cc-sre-kubernetes-sr-01/codebase/rdicidr-0.1.0
+        displayName: 'Linter (ESLint)'
+
+      - script: npm install --save-dev prettier
+        workingDirectory: $(Build.SourcesDirectory)/assessment-cc-sre-kubernetes-sr-01/codebase/rdicidr-0.1.0
+        displayName: 'Install Formatter (Prettier)'
+
+      - script: npm run prettier -- --write
+        workingDirectory: $(Build.SourcesDirectory)/assessment-cc-sre-kubernetes-sr-01/codebase/rdicidr-0.1.0
+        displayName: 'Format Code (Prettier)'
+
+      - script: CI=true npm run test
+        workingDirectory: $(Build.SourcesDirectory)/assessment-cc-sre-kubernetes-sr-01/codebase/rdicidr-0.1.0
+        displayName: 'Test (Jest)'
+
+      - script: npm run build
+        workingDirectory: $(Build.SourcesDirectory)/assessment-cc-sre-kubernetes-sr-01/codebase/rdicidr-0.1.0
+        displayName: 'Run Build'
+
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'MdcRegistry'
+          repository: 'Node.js'
+          command: 'buildAndPush'
+          Dockerfile: '$(Build.SourcesDirectory)/assessment-cc-sre-kubernetes-sr-01/codebase/rdicidr-0.1.0/Dockerfile'
+          buildContext: '$(Build.SourcesDirectory)/assessment-cc-sre-kubernetes-sr-01/codebase/rdicidr-0.1.0'
+          tags: 'latest'
+        displayName: 'Build and Push Docker Image'
+        continueOnError: true  
+
+      - task: AzureCLI@2
+        inputs:
+          azureSubscription: 'MdcAzureRm'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az aks get-credentials --resource-group projeto-flask --name k8scluster --overwrite-existing
+            kubectl apply -f $(Build.SourcesDirectory)/deployment_service.yml
+            kubectl get services
+        displayName: 'Execute Kubernetes'
+        continueOnError: true
+
+
+      - script: |
+          echo "Installing JMeter..."
+          sudo apt-get update -y
+          sudo apt-get install -y wget openjdk-11-jre  # Install Java and wget
+    
+          wget https://downloads.apache.org//jmeter/binaries/apache-jmeter-5.6.3.tgz
+          tar -xvzf apache-jmeter-5.6.3.tgz
+          sudo mv apache-jmeter-5.6.3 /opt/jmeter
+          
+          # Adiciona JMeter ao PATH corretamente
+          echo "export PATH=/opt/jmeter/bin:\$PATH" | sudo tee -a /etc/profile
+          export PATH=/opt/jmeter/bin:$PATH  # Atualiza PATH na sessão atual
+
+          echo "JMeter installed successfully."
+        displayName: 'Install JMeter'
+      
+      - script: |
+          echo "Creating JMeter test file..."
+          cp $(Build.SourcesDirectory)/test.jmx /opt/jmeter/test.jmx
+        displayName: 'Create JMeter Test File'
+
+      - task: AzureCLI@2
+        inputs:
+          azureSubscription: 'MdcAzureRm'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            NODEJS_IP=$(kubectl get svc nodejs-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+            echo "##vso[task.setvariable variable=NODEJS_IP]$NODEJS_IP"
+            echo "Fetched IP: $NODEJS_IP"
+        displayName: 'Retrieve NodeJS Service External IP'
+        continueOnError: true
+
+      - script: |
+          export PATH=/opt/jmeter/bin:$PATH
+          jmeter -v
+          jmeter -n -t /opt/jmeter/test.jmx -l /opt/jmeter/results.jtl -j jmeter.log -Jhost=$NODEJS_IP
+          cat /opt/jmeter/results.jtl
+          cat jmeter.log
+        displayName: 'Run JMeter'
+
+
+  - stage: Prometheus
+    displayName: Prometheus
+    pool:
+      name: Default
+      vmImage: 'vm1'
+    jobs:
+    - job: Prometheus
+      displayName: "Prometheus"
+      steps:
+      - script: |
+          sudo apt install -y prometheus prometheus-node-exporter nginx apache2-utils
+          
+          sudo systemctl enable --now prometheus
+          sudo systemctl enable --now prometheus-node-exporter
+          sudo systemctl enable --now nginx
+
+          systemctl status prometheus --no-pager
+          systemctl status prometheus-node-exporter --no-pager
+          systemctl status nginx --no-pager
+
+        displayName: "Prometheus Install"
+
+      - script: |
+          echo 'global:
+            scrape_interval: 15s
+
+          scrape_configs:
+            - job_name: "prometheus"
+              static_configs:
+                - targets: ["localhost:9090"]
+
+            - job_name: "node_exporter"
+              static_configs:
+                - targets: ["localhost:9100"]
+          ' | sudo tee /etc/prometheus/prometheus.yml
+
+          sudo systemctl restart prometheus
+        displayName: "Configurar Prometheus para coletar métricas"
+
+      - script: |
+          sudo ufw allow ssh
+          sudo ufw allow http
+          sudo ufw allow https
+          sudo ufw deny 9090
+          sudo ufw deny 9100
+          sudo ufw enable
+        displayName: "Configurar Acessos"
+      
+      - script: |
+          echo 'server {
+              listen 80;
+              server_name _;
+
+              location / {
+                  proxy_pass http://127.0.0.1:9090/;
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  auth_basic "Restricted Access";
+                  auth_basic_user_file /etc/nginx/.htpasswd;
+              }
+
+              location /metrics/ {
+                  proxy_pass http://127.0.0.1:9100/;
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  auth_basic "Restricted Access";
+                  auth_basic_user_file /etc/nginx/.htpasswd;
+              }
+          }' | sudo tee /etc/nginx/sites-available/default
+
+          sudo systemctl restart nginx
+        displayName: "Configurar Nginx"
+
+      - script: |
+          echo "Setting up Nginx authentication..."
+          
+          # Create .htpasswd file and add user
+          echo "senha123" | sudo htpasswd -c -i /etc/nginx/.htpasswd joaochiroli
+
+          sudo systemctl restart nginx
+        displayName: "Configure Basic Auth for Nginx"
