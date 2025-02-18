@@ -9,7 +9,7 @@ Technologies
 - Prometheus
 - Linux
 - NGINX
-- Azure Devops
+- Azure DevOps
 
 ​
 ## Challenge: Part 1
